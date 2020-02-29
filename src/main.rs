@@ -6,7 +6,7 @@ use std::process::Command;
 
 fn print_usage() {
     let brief = format!(
-        "Usage: ok [options] <number> [script-arguments..]
+"Usage: ok [options] <number> [script-arguments..]
        ok command [options]
        
 command (use one):
@@ -81,6 +81,11 @@ fn main() {
         return;
     }
 
+    let mut path = env::current_dir().unwrap();
+    let file = matches.opt_str("f").unwrap_or(".ok".to_string());
+
+    path.push(file);
+    // print!("{}", path.display());
     let output = if cfg!(target_os = "windows") {
         Command::new("cmd")
             .args(&["/C", "echo hello"])
