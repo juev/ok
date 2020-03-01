@@ -36,24 +36,26 @@ fn main() {
             let line = line.unwrap(); // Ignore errors.
                                       // Show the line and its number.
             println!("{}. {}", index + 1, line);
+            run_command(line);
         }
     } else {
         println!("not exist");
     }
+}
 
+fn run_command(command: String) {
     let output = if cfg!(target_os = "windows") {
         Command::new("cmd")
-            .args(&["/C", "echo hello"])
+            .args(&["/C", &command[..]])
             .output()
             .expect("failed to execute process")
     } else {
         Command::new("sh")
             .arg("-c")
-            .arg("echo hello")
+            .arg(command)
             .output()
             .expect("failed to execute process")
     };
-    // let hello = output.stdout;
 
     if !output.status.success() {
         println!("Command executed with failing error code");
