@@ -2,6 +2,8 @@ mod opts;
 mod usage;
 
 use std::env;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::path::Path;
 use std::process::Command;
 
@@ -22,13 +24,22 @@ fn main() {
         return;
     }
 
-    let mut dir = env::current_dir().unwrap();
     let file = matches.opt_str("f").unwrap_or(".ok".to_string());
 
-    dir.push(file);
-    let path = Path::new(dir.to_str().unwrap()).canonicalize().unwrap();
+    println!("{}", file);
 
-    print!("{}", path.display());
+    if Path::new(&file).exists() {
+        println!("exist");
+        let f = File::open(file).unwrap();
+        let reader = BufReader::new(f);
+        for (index, line) in reader.lines().enumerate() {
+            let line = line.unwrap(); // Ignore errors.
+                                      // Show the line and its number.
+            println!("{}. {}", index + 1, line);
+        }
+    } else {
+        println!("not exist");
+    }
 
     let output = if cfg!(target_os = "windows") {
         Command::new("cmd")
