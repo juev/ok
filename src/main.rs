@@ -32,18 +32,25 @@ fn main() {
         println!("exist");
         let f = File::open(file).unwrap();
         let reader = BufReader::new(f);
+        let mut commands = Vec::new();
+
         for (index, line) in reader.lines().enumerate() {
             let line = line.unwrap(); // Ignore errors.
                                       // Show the line and its number.
             println!("{}. {}", index + 1, line);
-            run_command(line);
+            commands.push(line.clone());
+            // run_command(&line);
+        }
+
+        for command in commands {
+            println!("{}", command);
         }
     } else {
         println!("not exist");
     }
 }
 
-fn run_command(command: String) {
+fn run_command(command: &String) {
     let output = if cfg!(target_os = "windows") {
         Command::new("cmd")
             .args(&["/C", &command[..]])
