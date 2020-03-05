@@ -14,17 +14,14 @@ fn main() {
         Ok(m) => m,
         Err(f) => panic!(f.to_string()),
     };
-    let mut verbose = false;
-    if matches.opt_present("v") {
-        verbose = true;
-    }
+    let verbose = matches.opt_present("v");
 
     if matches.opt_present("h") {
-        usage::print_usage(&verbose);
+        usage::print_usage(verbose);
         return;
     }
 
-    let file = matches.opt_str("f").unwrap_or(".ok".to_string());
+    let file = matches.opt_str("f").unwrap_or_else(|| ".ok".to_string());
 
     println!("{}", file);
 
@@ -50,7 +47,7 @@ fn main() {
     }
 }
 
-fn run_command(command: &String) {
+fn run_command(command: &str) {
     let output = if cfg!(target_os = "windows") {
         Command::new("cmd")
             .args(&["/C", &command[..]])

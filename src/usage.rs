@@ -1,4 +1,4 @@
-pub fn print_usage(verbose: &bool) {
+pub fn print_usage(verbose: bool) {
     println!("Usage: ok [options] <number> [script-arguments..]
        ok command [options]
        
@@ -20,7 +20,7 @@ options:
 script-arguments:
   ...                 These are passed through, when a line is executed (you can enter these too at the ok-prompt)");
 
-    if *verbose {
+    if verbose {
         println!("environment variables (used for colored output; current colors are shown):
   _OK_C_HEADING      Color-code for lines starting with a comment (heading). Defaults to red.
   _OK_C_NUMBER       Color-code for numbering. Defaults to cyan.
