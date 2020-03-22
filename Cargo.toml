@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 getopts = "0.2"
+colored = "1.9"
