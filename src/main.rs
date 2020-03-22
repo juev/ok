@@ -3,6 +3,7 @@ extern crate getopts;
 use getopts::*;
 use std::env;
 use std::fs::File;
+use std::io::{self, Write};
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 use std::process::{exit, Command};
@@ -35,11 +36,10 @@ fn main() {
             if line.trim().chars().next().unwrap() == '#' {
                 print_commands.push(line.clone());
             } else {
+                commands.push(line.clone());
                 let line = format!("{}. {}", count, line);
                 count += 1;
                 print_commands.push(line.clone());
-                commands.push(line.clone());
-                // run_command(&line);
             }
         }
 
@@ -49,7 +49,7 @@ fn main() {
             match input.parse::<i32>() {
                 Ok(input) => {
                     if input > 0 && input <= commands.len() as i32 {
-                        let line: &String = &commands[input as usize];
+                        let line: &String = &commands[(input - 1) as usize];
                         println!("{}", line);
                         run_command(line);
                     } else {
@@ -79,6 +79,8 @@ fn run_command(command: &str) {
             .output()
             .expect("failed to execute process")
     } else {
+        // TODO: get program from env (bash,zsh,sh,fish)
+        // TODO: add verbose
         Command::new("sh")
             .arg("-c")
             .arg(command)
@@ -90,13 +92,15 @@ fn run_command(command: &str) {
         println!("Command executed with failing error code");
     }
 
-    println!();
-    String::from_utf8(output.stdout)
-        .unwrap()
-        .lines()
-        .for_each(|x| println!("{}", x));
+    // String::from_utf8(output.stdout)
+    //     .unwrap()
+    //     .lines()
+    //     .for_each(|x| println!("{}", x));
+    io::stdout().write_all(&output.stdout).unwrap();
+    io::stderr().write_all(&output.stderr).unwrap();
 }
 
+// TODO: add all commands
 pub fn create_opts() -> Options {
     let mut opts = Options::new();
     opts.optflag("h", "help", "Show this help screen");
