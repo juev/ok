@@ -1,9 +1,9 @@
-// TODO: add arguments for commands
 // https://github.com/secretGeek/ok-bash
 extern crate getopts;
 
 use colored::*;
 use getopts::*;
+use regex::{Captures, Regex};
 use std::env;
 use std::fs::File;
 use std::io::{self, Write};
@@ -52,13 +52,13 @@ fn main() {
         // get positionsal arg
         if !matches.free.is_empty() {
             let input = matches.free[0].clone();
-            let args = matches.free.clone().join(" ").to_string();
+            let args = matches.free.clone();
             match input.parse::<i32>() {
                 Ok(input) => {
                     if input > 0 && input <= commands.len() as i32 {
                         let line: &String = &commands[(input - 1) as usize];
                         println!("$ {}", line);
-                        run_command(line, &args);
+                        run_command(line, args);
                     } else {
                         println!("Number not found: {}", input);
                     }
@@ -79,34 +79,30 @@ fn main() {
     }
 }
 
-fn run_command(command: &str, args: &str) {
+fn run_command(command: &str, args: Vec<String>) {
     let shell = match env::var("SHELL") {
         Ok(m) => m,
         Err(_) => "sh".to_string(),
     };
+    let v: Vec<&str> = args.iter().map(String::as_ref).collect();
+    let command = fill_placeholders(command, &v);
     let output = if cfg!(target_os = "windows") {
         Command::new("cmd")
             .args(&["/C", &command[..]])
-            .arg(args)
             .output()
             .expect("failed to execute process")
     } else {
         Command::new(shell)
             .arg("-c")
             .arg(command)
-            .arg(args)
             .output()
             .expect("failed to execute process")
     };
 
-    // if !output.status.success() {
-    //     println!("Command executed with failing error code");
-    // }
     io::stdout().write_all(&output.stdout).unwrap();
     io::stderr().write_all(&output.stderr).unwrap();
 }
 
-// TODO: add all commands
 pub fn create_opts() -> Options {
     let mut opts = Options::new();
     opts.optflag("h", "help", "Show this help screen");
@@ -141,4 +137,17 @@ options:
   -h, --help          Show this help screen
 script-arguments:
   ...                 These are passed through, when a line is executed (you can enter these too at the ok-prompt)");
+}
+
+fn fill_placeholders(template: &str, values: &[&str]) -> String {
+    let regex = Regex::new(r#"\$(\d+)"#).unwrap();
+    regex
+        .replace_all(template, |captures: &Captures| {
+            values.get(index(captures)).unwrap_or(&"")
+        })
+        .to_string()
+}
+
+fn index(captures: &Captures) -> usize {
+    captures.get(1).unwrap().as_str().parse().unwrap()
 }
