@@ -1,3 +1,5 @@
+// TODO: add color to output
+// TODO: get variables for colors from env
 extern crate getopts;
 
 use getopts::*;
