@@ -1,4 +1,3 @@
-// https://github.com/secretGeek/ok-bash
 extern crate getopts;
 
 use colored::*;
@@ -24,7 +23,8 @@ fn main() {
         return;
     }
     if matches.opt_present("V") {
-        println!("Version of `ok`: 0.0.1");
+        let version = env!("CARGO_PKG_VERSION");
+        println!("Version of `ok`: {}", version);
         return;
     }
 

@@ -1,0 +1,50 @@
+name: Publish release
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Publish
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {
+            os: ubuntu-latest,
+            artifact_name: ok,
+            asset_name: ok-linux-amd64,
+            strip: true
+            }
+          - {
+            os: windows-latest,
+            artifact_name: ok.exe,
+            asset_name: ok-windows-amd64,
+            strip: false
+            }
+          - {
+            os: macos-latest,
+            artifact_name: ok,
+            asset_name: ok-macos-amd64,
+            strip: true
+            }
+    steps:
+      - uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: stable
+      - uses: actions/checkout@v2
+      - name: Build
+        run: cargo build --release
+      - name: Install macOS dependencies
+        if: matrix.config.os == 'macos-latest'
+        run: brew install p7zip
+      - name: Zip binary file
+        run: 7z a ./${{ matrix.config.asset_name }}.zip ./target/release/${{ matrix.config.artifact_name }}
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: ./${{ matrix.config.asset_name }}.zip
+          asset_name: ${{ matrix.config.asset_name }}.zip
+          tag: ${{ github.ref }}
