@@ -1,6 +1,7 @@
 // TODO: add color to output
 // TODO: get variables for colors from env
 // TODO: add arguments for commands
+// TODO: add prompt for command
 // https://github.com/secretGeek/ok-bash
 extern crate getopts;
 
@@ -54,7 +55,7 @@ fn main() {
                 Ok(input) => {
                     if input > 0 && input <= commands.len() as i32 {
                         let line: &String = &commands[(input - 1) as usize];
-                        println!("{}", line);
+                        println!("$ {}", line);
                         run_command(line);
                     } else {
                         println!("Number not found: {}", input);
@@ -95,11 +96,6 @@ fn run_command(command: &str) {
     if !output.status.success() {
         println!("Command executed with failing error code");
     }
-
-    // String::from_utf8(output.stdout)
-    //     .unwrap()
-    //     .lines()
-    //     .for_each(|x| println!("{}", x));
     io::stdout().write_all(&output.stdout).unwrap();
     io::stderr().write_all(&output.stderr).unwrap();
 }
