@@ -1,5 +1,7 @@
 # ok
 
+[![Crates.io](https://img.shields.io/crates/v/ok)](https://crates.io/crates/ok) [![Crates.io](https://img.shields.io/crates/l/ok.svg?maxAge=2592000)](https://github.com/juev/ok/blob/master/LICENSE)
+
 This is Rust fork of [ok-bash](https://github.com/secretGeek/ok-bash).
 
 ## "ok" gives you .ok folder profiles for bash
