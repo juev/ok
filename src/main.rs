@@ -1,5 +1,7 @@
 // TODO: add color to output
 // TODO: get variables for colors from env
+// TODO: add arguments for commands
+// https://github.com/secretGeek/ok-bash
 extern crate getopts;
 
 use getopts::*;
