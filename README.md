@@ -52,7 +52,7 @@ And you can pass simple arguments to the commands. For example:
 
 ### Installation
 
-Put binary file from [release]() page to your `PATH`.
+Put binary file from [release](https://github.com/juev/ok/releases/latest) page to your `PATH`.
 
 ### First steps after installing
 
