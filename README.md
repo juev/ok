@@ -70,9 +70,3 @@ The first line adds a "heading" to the `.ok` file, which is nice to keep the fil
 Also, I use single quotes `'`, so no funny things happen to the string, before it ends up in your `.ok` file. This way, `$USER` and `$(date...)` are evaluated when the `ok` command is run, not when you add the line to the `.ok` file.
 
 What to put in these `.ok` files? A good place to start is the projects documentation: search for all commands that are buried in there. Even add running a script file with a comment (and grouped under the correct heading) can be really helpfull. And whenever you `man` a command or search Google for it, remember to check if it's worth to add it to your `.ok` file. It probably is. And it's easy to remove again.
-
-After that you can look at customization. This allows you to do things such as:
-
-* show the ok-list automatically everytime you change folders
-* change the coloring scheme and other formatting options
-* create your own commands that use ok
