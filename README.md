@@ -56,6 +56,12 @@ And you can pass simple arguments to the commands. For example:
 
 Put binary file from [release](https://github.com/juev/ok/releases/latest) page to your `PATH`.
 
+Or use `Cargo`:
+
+```
+cargo install ok
+```
+
 ### First steps after installing
 
 You can try out the included `.ok` file by navigating to `~/path/to/ok` and type `ok`. Explore some of the options.
