@@ -5,7 +5,7 @@ use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
-use std::process::Command;
+use std::process::{exit, Command};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -27,36 +27,48 @@ fn main() {
         let f = File::open(file).unwrap();
         let reader = BufReader::new(f);
         let mut commands = Vec::new();
+        let mut print_commands = Vec::new();
 
-        // TODO: Add print_command vector for output
         let mut count = 1;
         for (_, line) in reader.lines().enumerate() {
             let line = line.unwrap();
             if line.trim().chars().next().unwrap() == '#' {
-                println!("{}", line);
+                print_commands.push(line.clone());
             } else {
-                println!("{}. {}", count, line);
+                let line = format!("{}. {}", count, line);
                 count += 1;
+                print_commands.push(line.clone());
                 commands.push(line.clone());
                 // run_command(&line);
             }
         }
-        println!();
-        for command in commands {
-            println!("{}", command);
-        }
-        // TODO: Add validate for positionsal args
+
         // get positionsal arg
         if !matches.free.is_empty() {
             let input = matches.free[0].clone();
-            let c_input: i32 = input.parse().unwrap();
-            println!("{}", c_input);
-        } else {
-            print_usage(verbose);
+            match input.parse::<i32>() {
+                Ok(input) => {
+                    if input > 0 && input <= commands.len() as i32 {
+                        let line: &String = &commands[input as usize];
+                        println!("{}", line);
+                        run_command(line);
+                    } else {
+                        println!("Number not found: {}", input);
+                    }
+                }
+                Err(e) => {
+                    println!("Get error in parsing <number>: {}", e);
+                    exit(1);
+                }
+            }
             return;
-        };
+        }
+
+        for command in print_commands {
+            println!("{}", command);
+        }
     } else {
-        println!("not exist");
+        println!("File `{}` do not exist", &file);
     }
 }
 
